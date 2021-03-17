@@ -53,9 +53,7 @@ void Scheduler::start() {
         return;
     }
     m_stopping = false;
-    TOPSON_ASSERT(m_threads.empty());
-
-    m_threads.resize(m_threadCount);
+    TOPSON_ASSERT(m_threads.empty()); m_threads.resize(m_threadCount);
     for(size_t i = 0; i < m_threadCount; ++i) {
         m_threads[i].reset(new Thread(std::bind(&Scheduler::run, this)
                             , m_name + "_" + std::to_string(i)));
@@ -88,7 +86,7 @@ void Scheduler::stop() {
     if(m_rootThread != -1) {
         TOPSON_ASSERT(GetThis() == this);
     } else {
-        TOPSON_ASSERT(GetThis() == this);
+        TOPSON_ASSERT(GetThis() != this);
     }
 
     m_stopping = true;
