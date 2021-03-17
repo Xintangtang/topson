@@ -11,10 +11,12 @@ include_directories(.)
 
 
 set(LIB_SRC
-    topson/log.cc
-    topson/util.cc
     topson/config.cc
+    topson/fiber.cc
+    topson/log.cc
+    topson/scheduler.cc
     topson/thread.cc
+    topson/util.cc
     )
 
 add_library(topson SHARED ${LIB_SRC})
@@ -49,6 +51,21 @@ add_executable(test_thread tests/test_thread.cc)
 add_dependencies(test_thread topson)
 force_redefine_file_macro_for_sources(test_thread) #__FILE__
 target_link_libraries(test_thread topson ${LIBS})
+
+add_executable(test_util tests/test_util.cc)
+add_dependencies(test_util sylar)
+force_redefine_file_macro_for_sources(test_util) #__FILE__
+target_link_libraries(test_util ${LIBS})
+
+add_executable(test_fiber tests/test_fiber.cc)
+add_dependencies(test_fiber sylar)
+force_redefine_file_macro_for_sources(test_fiber) #__FILE__
+target_link_libraries(test_fiber ${LIBS})
+
+add_executable(test_scheduler tests/test_scheduler.cc)
+add_dependencies(test_scheduler sylar)
+force_redefine_file_macro_for_sources(test_scheduler) #__FILE__
+target_link_libraries(test_scheduler ${LIBS})
 
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

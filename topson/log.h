@@ -18,7 +18,7 @@
     if(logger->getLevel() <= level) \
         topson::LogEventWrap(topson::LogEvent::ptr(new topson::LogEvent(logger, level, \
                         __FILE__, __LINE__, 0, topson::GetThreadId(), \
-                        topson::GetFiberId(), time(0)))).getSS()
+                topson::GetFiberId(), time(0), topson::Thread::GetName()))).getSS()
 
 #define TOPSON_LOG_DEBUG(logger) TOPSON_LOG_LEVEL(logger, topson::LogLevel::DEBUG)
 #define TOPSON_LOG_INFO(logger) TOPSON_LOG_LEVEL(logger, topson::LogLevel::INFO)
@@ -30,7 +30,7 @@
     if(logger->getLevel() <= level) \
         topson::LogEventWrap(topson::LogEvent::ptr(new topson::LogEvent(logger, level, \
                         __FILE__, __LINE__, 0, topson::GetThreadId(), \
-                        topson::GetFiberId(), time(0)))).getEvent()->format(fmt, __VA_ARGS__)
+                topson::GetFiberId(), time(0), topson::Thread::GetName()))).getEvent()->format(fmt, __VA_ARGS__)
 
 #define TOPSON_LOG_FMT_DEBUG(logger, fmt, ...) TOPSON_LOG_FMT_LEVEL(logger, topson::LogLevel::DEBUG, fmt, __VA_ARGS__)
 #define TOPSON_LOG_FMT_INFO(logger, fmt, ...) TOPSON_LOG_FMT_LEVEL(logger, topson::LogLevel::INFO, fmt, __VA_ARGS__)
@@ -68,7 +68,8 @@ public:
     typedef std::shared_ptr<LogEvent> ptr;
     LogEvent(std::shared_ptr<Logger> logger, LogLevel::Level level
             ,const char* file, int32_t m_line, uint32_t elapse
-            , uint32_t thread_id, uint32_t fiber_id, uint64_t time);
+            ,uint32_t thread_id, uint32_t fiber_id, uint64_t time
+            ,const std::string& thread_name);
 
     const char* getFile() const { return m_file;}
     int32_t getLine() const { return m_line;}
@@ -76,6 +77,7 @@ public:
     uint32_t getThreadId() const { return m_threadId;}
     uint32_t getFiberId() const { return m_fiberId;}
     uint64_t getTime() const { return m_time;}
+    const std::string& getThreadName() const { return m_threadName;}
     std::string getContent() const { return m_ss.str();}
     std::shared_ptr<Logger> getLogger() const { return m_logger;}
     LogLevel::Level getLevel() const { return m_level;}
@@ -90,6 +92,7 @@ private:
     uint32_t m_threadId = 0;       //线程id
     uint32_t m_fiberId = 0;        //协程id
     uint64_t m_time = 0;           //时间戳
+    std::string m_threadName;
     std::stringstream m_ss;
 
     std::shared_ptr<Logger> m_logger;
